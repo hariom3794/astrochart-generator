@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Astrology Chart Generator</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Astrology Chart Generator</h1>
+      <form action="/get_details" method="post">
+        <label>Date of Birth: <input type="date" name="dob" required /></label
+        ><br />
+        <label>Time of Birth: <input type="time" name="tob" required /></label
+        ><br />
+        <label>Latitude: <input type="text" name="lat" required /></label><br />
+        <label>Longitude: <input type="text" name="lon" required /></label
+        ><br />
+        <label>Timezone: <input type="text" name="tzone" required /></label
+        ><br />
+        <button type="submit">Get Details</button>
+      </form>
+
+      {% if birth_data or planet_data %}
+      <div class="tabs">
+        <button onclick="showTab('birth')">Birth Details</button>
+        <button onclick="showTab('planet')">Planet Details</button>
+      </div>
+
+      <div id="birth" class="tab-content">
+        <h2>Birth Details</h2>
+        {% if birth_data %}
+        <pre>{{ birth_data | tojson(indent=2) }}</pre>
+        {% else %}
+        <p>No birth details available.</p>
+        {% endif %}
+      </div>
+
+      <div id="planet" class="tab-content" style="display: none">
+        <h2>Planet Details</h2>
+        {% if planet_data %}
+        <pre>{{ planet_data | tojson(indent=2) }}</pre>
+        <a href="{{ url_for('download_csv') }}">
+          <button>Download Planet CSV</button>
+        </a>
+        {% else %}
+        <p>No planet details available.</p>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    <script>
+      function showTab(id) {
+        document.getElementById("birth").style.display = "none";
+        document.getElementById("planet").style.display = "none";
+        document.getElementById(id).style.display = "block";
+      }
+    </script>
+  </body>
+</html>
